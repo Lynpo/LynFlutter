@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/funclass/classinterface.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,6 +51,7 @@ class Point {
 //  Point(this.x,this.y);
   Point(this.x,this.y) : z = 0;// 初始化变量 z
   Point.bottom(num x) : this(x, 0);// 重定向构造函数
+//  Point.right(int r):this(r, 0);
 //  void printInfo() => print('($x, $y)');
   void printInfo() => print('($x, $y, $z)');
   static void printZValue() => print('$factor');
@@ -75,32 +77,20 @@ class _MyHomePageState extends State<MyHomePage> {
     print('$num is zero: ${check(num)}');
   }
 
-  void _incrementCounter() {
-    Function f = isZero;
-    printInfo(_counter, f);
-    printInfo(0, f);
-
+  void _onFloatActionButtonPressed() {
     if (_counter % 2 == 0) {
+      functionAsParam();
       // 可选命名参数函数调用
-      enable1Flags(bold: true, hidden: false); //true, false
-      enable1Flags(bold: true); //true, null
-      enable2Flags(bold: false); //false, false
-
-      // 可忽略参数函数调用
-      enable3Flags(true, false); //true, false
-      enable3Flags(true,); //true, null
-      enable4Flags(true); //true, false
-      enable4Flags(true,true); // true, true
+      functionParams(); // true, true
+      classAccess();
     } else {
-      var p = new Point(100,200); // new 关键字可以省略
-      p.printInfo();  // 输出 (100, 200);
-      Point.factor = 10;
-      Point.printZValue(); // 输出 10
-
-      var pb = Point.bottom(100);
-      pb.printInfo();
+      classInterface();
     }
 
+    _incrementCounter();
+  }
+
+  void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -108,8 +98,42 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-//      _counter = 0;
+    //      _counter = 0;
     });
+  }
+
+  void functionAsParam() {
+    Function f = isZero;
+    printInfo(_counter, f);
+    printInfo(0, f);
+  }
+
+  void classInterface() {
+    var v = new VectorAction();
+    v.run();
+  }
+
+  void classAccess() {
+    var p = new Point(100,200); // new 关键字可以省略
+    p.printInfo();  // 输出 (100, 200);
+    Point.factor = 10;
+    Point.printZValue(); // 输出 10
+    
+    var pb = Point.bottom(100);
+    pb.printInfo();
+  }
+
+  void functionParams() {
+    // 可选命名参数函数调用
+    enable1Flags(bold: true, hidden: false); //true, false
+    enable1Flags(bold: true); //true, null
+    enable2Flags(bold: false); //false, false
+    
+    // 可忽略参数函数调用
+    enable3Flags(true, false); //true, false
+    enable3Flags(true,); //true, null
+    enable4Flags(true); //true, false
+    enable4Flags(true,true); // true, true
   }
 
   @override
@@ -167,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _onFloatActionButtonPressed,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
