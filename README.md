@@ -1,4 +1,5 @@
-# flutter_app
+# LynFlutter
+flutter related libs, modules, or flutter_app
 
 A new Flutter application.
 

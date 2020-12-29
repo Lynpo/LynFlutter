@@ -18,7 +18,7 @@ class Coordinate implements Point {
 }
 
 /// NOTE: the extends clause must be before with clause
-class CoordinateMixin extends Point with Point /*NOTE: the extends clause must be before with clause*/ {
+class CoordinateMixin extends Point/* with Point*/ /*NOTE: the extends clause must be before with clause*/ {
 //  @override
 //  void printInfo(String tag) {
 //    // TODO: implement printInfo
@@ -53,6 +53,10 @@ class OperatorVector {
   OperatorVector operator + (OperatorVector v) =>  OperatorVector(x + v.x, y + v.y);
   // 覆写相等运算符，判断向量相等
   bool operator == (dynamic v) => x == v.x && y == v.y;
+
+  @override
+  int get hashCode => super.hashCode;
+
 }
 
 
@@ -83,7 +87,7 @@ class VectorAction {
     String result = '';
 
     AB ab = AB();
-    result += ab?.getMessage();
+    result += ab.getMessage();
     ab.printAInfo("ab");
     ab.printBInfo("ab");
     print("ab.getMessage():"+result);
@@ -108,7 +112,7 @@ class VectorAction {
     d ?? AB();
     d?.printAInfo("not=sure-new=d");
     d = d ?? AB();
-    d?.printAInfo("new-d");
+    d.printAInfo("new-d");
 
 
     /// Vector 类中自定义“+”运算符和覆写"=="运算符的例子...

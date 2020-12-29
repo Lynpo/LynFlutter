@@ -26,8 +26,46 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class YourApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _YourAppState();
+}
+
+class _YourAppState extends State<YourApp>{
+  @override
+  void setState(fn) {
+    super.setState(fn);
+    print("_YourAppState::setState.");
+  }
+  @override
+  Widget build(BuildContext context) {
+    print("_YourAppState::build.");
+    return Text('Root widget');
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("_YourAppState::didChangeDependencies.");
+  }
+  @override
+  void didUpdateWidget(YourApp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("_YourAppState::didChangeDependencies.");
+  }
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("_YourAppState::deactivate.");
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    print("_YourAppState::dispose.");
+  }
+}
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title = ""}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -57,19 +95,66 @@ class Point {
   static void printZValue() => print('$factor');
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int _counter = 0;
+
+  /// 生命周期方法测试
+  /// 生命周期方法测试
+  @override
+  void initState() {
+    super.initState();
+    print("_MyHomePageState==initState.");
+    WidgetsBinding.instance?.addObserver(this);
+    // 单次 Frame 绘制回调，通过 addPostFrameCallback 实现。它会在当前 Frame 绘制完成后
+    // 进行回调，并且只会回调一次，如果要再次监听则需要再设置一次
+    WidgetsBinding.instance?.addPostFrameCallback((_){
+      print(" 单次 Frame 绘制回调  ");
+    });
+    // 实时 Frame 绘制回调，则通过 addPersistentFrameCallback 实现。这个函数会在每次绘
+    // 制 Frame 结束后进行回调，可以用做 FPS 监测。
+    WidgetsBinding.instance?.addPersistentFrameCallback((_){
+      print(" 实时 Frame 绘制回调  ");
+    });
+  }
+  @override
+  void setState(fn) {
+    super.setState(fn);
+    print("_MyHomePageState==setState.");
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("_MyHomePageState==didChangeDependencies.");
+  }
+  @override
+  void didUpdateWidget(MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("_MyHomePageState==didUpdateWidget.");
+  }
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("_MyHomePageState==deactivate.");
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    print("_MyHomePageState==dispose.");
+    WidgetsBinding.instance?.removeObserver(this);
+  }
+  /// 生命周期方法测试
+  /// 生命周期方法测试
 
   bool isZero(int num) {
     return num == 0;
   }
 
   // 要达到可选命名参数的用法，那就在定义函数的时候给参数加上 {}
-  void enable1Flags({bool bold, bool hidden}) => print("$bold , $hidden");
+  void enable1Flags({bool bold, bool hidden = false}) => print("$bold , $hidden");
   // 定义可选命名参数时增加默认值
   void enable2Flags({bool bold = true, bool hidden = false}) => print("$bold ,$hidden");
   // 可忽略的参数在函数定义时用 [] 符号指定
-  void enable3Flags(bool bold, [bool hidden]) => print("$bold ,$hidden");
+  void enable3Flags(bool bold, [bool hidden = false]) => print("$bold ,$hidden");
   // 定义可忽略参数时增加默认值
   void enable4Flags(bool bold, [bool hidden = false]) => print("$bold ,$hidden");
 
@@ -180,12 +265,12 @@ class _MyHomePageState extends State<MyHomePage> {
             textAlign: TextAlign.start),
             Text(
               'You have pushed the button this many times:',
-              style: Theme.of(context).textTheme.body2,
+              style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.start,
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
@@ -197,4 +282,64 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  /// 生命周期回调测试，通过混入 WidgetsBindingObserver， 注册回调测试
+  /// 生命周期回调测试，通过混入 WidgetsBindingObserver， 注册回调测试
+  @override
+  void didChangeAccessibilityFeatures() {
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // AppLifecycleState.inactive
+    // AppLifecycleState.paused
+    // AppLifecycleState.inactive
+    // AppLifecycleState.resumed
+    print("didChangeAppLifecycleState:new state:$state");
+    switch (state) {
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.paused:
+        break;
+      // case AppLifecycleState.suspending:
+      //   break;
+      case AppLifecycleState.detached:
+        break;
+    }
+  }
+
+  // @override
+  // void didChangeLocales(List<Locale> locale) {
+  // }
+
+  @override
+  void didChangeMetrics() {
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+  }
+
+  @override
+  void didChangeTextScaleFactor() {
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+  }
+
+  @override
+  Future<bool> didPopRoute() {
+    return Future<bool>.value(false);
+  }
+
+  @override
+  Future<bool> didPushRoute(String route) {
+    return Future<bool>.value(true);
+  }
+/// 生命周期回调测试，通过混入 WidgetsBindingObserver， 注册回调测试
+/// 生命周期回调测试，通过混入 WidgetsBindingObserver， 注册回调测试
+
 }
